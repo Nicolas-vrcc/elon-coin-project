@@ -1,0 +1,2 @@
+
+contract('ElonCoin', function (accounts) {

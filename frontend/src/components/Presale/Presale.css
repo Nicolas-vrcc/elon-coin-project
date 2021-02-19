@@ -1,0 +1,162 @@
+.button.currency {
+  -webkit-box-align: center;
+  align-items: center;
+  height: 2.2rem;
+  font-size: 20px;
+  font-weight: 500;
+  border-radius: 12px;
+  box-shadow: none;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  padding: 0px 0.5rem;
+}
+.button.currency > span {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+}
+.button.currency > span > img {
+  width: 24px;
+  height: 24px;
+  box-shadow: rgb(0 0 0 / 8%) 0px 6px 10px;
+  border-radius: 24px;
+}
+.button.currency > span > span {
+  margin: 0px 0.25rem 0px 0.75rem;
+  font-size: 20px;
+}
+
+.separator {
+  align-items: center;
+  justify-content: center;
+
+  display: grid;
+  grid-auto-rows: auto;
+}
+
+.sepdiv {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  width: 100%;
+  display: flex;
+  padding: 0px;
+  -webkit-box-align: center;
+  align-items: center;
+  flex-wrap: wrap;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+}
+
+.box-input {
+  display: flex;
+  flex-flow: column nowrap;
+  position: relative;
+  border-radius: 20px;
+  z-index: 1;
+}
+
+.price {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  width: 100%;
+  padding: 0.25rem 0.75rem 0px;
+  border-radius: 20px;
+}
+
+.price.inner {
+  display: grid;
+  grid-auto-rows: auto;
+  row-gap: 4px;
+}
+
+.price.inner.inner {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  width: 100%;
+  display: flex;
+  padding: 0px;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+}
+
+.price-amount {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  font-weight: 500;
+  font-size: 14px;
+  color: rgb(195, 197, 203);
+}
+
+.max {
+  height: 28px;
+  background-color: rgb(242, 228, 229);
+  border: 1px solid rgb(242, 228, 229);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  color: rgb(162, 3, 14);
+}
+
+.swap-btn {
+  margin-top: 12px;
+}
+
+#swap-button:disabled {
+  background-color: rgb(221, 223, 228);
+  cursor: default !important;
+  color: rgb(112, 112, 112);
+}
+#swap-button {
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+  box-shadow: none;
+  border: 1px solid transparent;
+  outline: none;
+
+  width: 100%;
+  text-align: center;
+  border-radius: 20px;
+  text-decoration: none;
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  -webkit-box-align: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  appearance: none;
+  line-height: inherit;
+  font-size: inherit;
+  padding: 8px 16px;
+}
+
+.swap-button-text {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.border-radius {
+  border-radius: 20px;
+  border: 1px solid rgb(44, 47, 54);
+}
