@@ -80,19 +80,21 @@ contract Presale is Ownable {
     );
 
     //constructor
-    constructor(address _token, address _tokenBUSD) public {
-        require(_token != address(0), "Zero address");
+    constructor(address _tokenBUSD) public {
         require(_tokenBUSD != address(0), "Zero address");
 
         wallet = msg.sender;
-        token = IERC20(_token);
         tokenBUSD = IERC20(_tokenBUSD);
 
-        rate = 10**(uint256(token.decimals())); //4busd == 1TOKEN
         cap = 80000 * (10**uint256(tokenBUSD.decimals()));
         investorMinCap = 4 * (10**uint256(tokenBUSD.decimals()));
+    }
 
-        token.receiveTokenForPresale(); // Get the tokens for presale
+    function updateElonAddress(address _token) public onlyOwner {
+        require(_token != address(0), "Zero address");
+
+        token = IERC20(_token);
+        rate = 10**(uint256(token.decimals())); //4busd == 1TOKEN
     }
 
     // -----------------------------------------

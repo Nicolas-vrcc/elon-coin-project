@@ -5,10 +5,10 @@ const Footer = props => {
         <>
             <div className="text-center">
                 <div className="header-footer">
-                    <div>This is where it starts</div>
-                    <small>Fasten your seat belts</small>
+                    <h1>This is where it starts</h1>
+                    <h3>Fasten your seat belts</h3>
                 </div>
-                <a href="#header"><img src="back_to_top.png" width="30%"></img></a>
+                <a href="#header"><img src="back_to_top.png" width="30%" alt="top_banner"></img></a>
             </div>
             <div>
                 <div className="float-left">

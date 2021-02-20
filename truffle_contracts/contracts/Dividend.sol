@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 contract Dividend {
     using SafeMath for uint256;
 
-    mapping(address => uint256x) public userLastDividened;
+    mapping(address => uint256) public userLastDividened;
     IERC20 public token;
     address public presale;
 
@@ -18,9 +18,9 @@ contract Dividend {
 
     function claimDividend() public returns (bool) {
         address _customer = msg.sender;
-        uint256 userBalance = token.balaceOf(_customer);
-        uint256 presaleBalance = token.balaceOf(presale);
-        uint256 totalDividened = token.balaceOf(address(this));
+        uint256 userBalance = token.balanceOf(_customer);
+        uint256 presaleBalance = token.balanceOf(presale);
+        uint256 totalDividened = token.balanceOf(address(this));
 
         // substract last value user has taken
         uint256 dividendToBeShared =

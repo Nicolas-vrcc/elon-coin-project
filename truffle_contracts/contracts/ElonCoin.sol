@@ -37,7 +37,7 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
      * See {ERC20-_burn}.
      */
     function burn(uint256 amount) public virtual override {
-        if (sender == presale || recipient == presale) {
+        if (msg.sender == presale) {
             //No burning or dividened cut if the receiver or sender is the presale contract
             super.burn(amount);
         } else {
@@ -49,7 +49,7 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
 
     //
     function burnFrom(address account, uint256 amount) public virtual override {
-        if (sender == presale || recipient == presale) {
+        if (msg.sender == presale || account == presale) {
             //No burning or dividened cut if the receiver or sender is the presale contract
             super.burnFrom(account, amount);
         } else {
@@ -103,12 +103,8 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
         }
     }
 
-    modifier onlyPresale() {
-        require(msg.sender == presale);
-        _;
-    }
-
-    function receiveTokenForPresale() public onlyPresale returns (bool) {
+    function receiveTokenForPresale() public returns (bool) {
+        require(presale != address(0), "Can't send token to zero address");
         require(!alreadySent, "Token for presale has been sent already"); //To make sure we don't send token twice to the presale contracts
         alreadySent = true; // change already sent to true
         mint(presaleTokens);
@@ -118,16 +114,15 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
         _mint(_msgSender(), amount);
     }
 
-    function updatePresaleAddress(address _presale) public onlyOwner {
-        presale = _presale;
-    }
-
-    constructor()
+    constructor(address presale_)
         public
         ERC20("ElonCoin", "ELON")
-        ERC20Capped(100000 * 10**(uint256(decimals())))
+        ERC20Capped(100000 * 10**uint256(decimals()))
     {
-        presaleTokens = 20000 * 10**(uint256(decimals())); //we could hardcode this here (20000 Tokens)
+        // presaleTokens = 20000 * 10**(uint256(decimals())); //we could hardcode this here (20000 Tokens)
         presaleTokens = cap().div(100).mul(20); //or compute the value from cap
+        presale = presale_;
+        mint(100);
+        _mint(presale, presaleTokens);
     }
 }
