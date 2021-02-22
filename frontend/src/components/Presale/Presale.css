@@ -148,6 +148,10 @@
   padding: 8px 16px;
 }
 
+.wrong-network {
+  background-color: rgb(162, 3, 14) !important;
+}
+
 .swap-button-text {
   box-sizing: border-box;
   margin: 0px;
@@ -159,4 +163,56 @@
 .border-radius {
   border-radius: 20px;
   border: 1px solid rgb(44, 47, 54);
+}
+
+.input-field-div {
+  display: flex;
+  flex-flow: row nowrap;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 0.75rem 0.75rem 0.75rem 1rem;
+}
+
+.input-field {
+  width: 50%;
+  position: relative;
+  font-weight: 500;
+  outline: none;
+  border: none;
+  flex: 1 1 auto;
+  font-size: 24px;
+  background-color: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0px;
+  appearance: textfield;
+}
+.main-text {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  font-weight: 500;
+  font-size: 14px;
+}
+.header {
+  display: flex;
+  flex-flow: row nowrap;
+  -webkit-box-align: center;
+  align-items: center;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  padding: 0.75rem 1rem 0px;
+}
+.inner-header {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  width: 100%;
+  display: flex;
+  padding: 0px;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
 }
