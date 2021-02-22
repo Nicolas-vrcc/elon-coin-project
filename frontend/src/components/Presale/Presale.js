@@ -37,7 +37,7 @@ const Presale = (props) => {
       }
     };
     fetch();
-  }, [props.connected.address]);
+  }, [props.connected.networkId]);
 
   useEffect(() => {
     const fetch = async () => {

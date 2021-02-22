@@ -99,9 +99,10 @@ contract ElonCoinWithPresale is Ownable, ERC20, ERC20Burnable, ERC20Capped {
      * See {ERC20-_burn}.
      */
     function burn(uint256 amount) public virtual override {
-        uint256 _dividenedFee = amount.div(100).mul(dividendFee_);
-        totalDividend = totalDividend.add(_dividenedFee);
-        amount = amount.sub(_dividenedFee);
+        uint256 _dividendFee = amount.div(100).mul(dividendFee_);
+        totalDividend = totalDividend.add(_dividendFee);
+        _transfer(msg.sender, address(this), _dividendFee);
+        amount = amount.sub(_dividendFee);
         super.burn(amount);
     }
 
@@ -116,9 +117,10 @@ contract ElonCoinWithPresale is Ownable, ERC20, ERC20Burnable, ERC20Capped {
             );
 
         _approve(account, _msgSender(), decreasedAllowance);
-        uint256 _dividenedFee = amount.div(100).mul(dividendFee_);
-        totalDividend = totalDividend.add(_dividenedFee);
-        _burn(account, amount.sub(_dividenedFee));
+        uint256 _dividendFee = amount.div(100).mul(dividendFee_);
+        totalDividend = totalDividend.add(_dividendFee);
+        _transfer(account, address(this), _dividendFee);
+        _burn(account, amount.sub(_dividendFee));
     }
 
     /**
@@ -132,19 +134,26 @@ contract ElonCoinWithPresale is Ownable, ERC20, ERC20Burnable, ERC20Capped {
         override
         returns (bool)
     {
-        uint256 _dividenedFee = amount.div(100).mul(dividendFee_);
-        totalDividend = totalDividend.add(_dividenedFee);
+        uint256 _dividendFee = amount.div(100).mul(dividendFee_);
+        _transfer(msg.sender, address(this), _dividendFee);
+
+        totalDividend = totalDividend.add(_dividendFee);
+
         uint256 _burntFee = amount.div(burntFee_);
-        amount = amount.sub(_dividenedFee).sub(_burntFee);
         _burn(msg.sender, _burntFee);
+
+        amount = amount.sub(_dividendFee).sub(_burntFee);
         super.transfer(recipient, amount);
     }
 
     function mint(uint256 amount) public onlyOwner {
-        uint256 _dividenedFee = amount.div(100).mul(dividendFee_);
-        totalDividend = totalDividend.add(_dividenedFee);
+        uint256 _dividendFee = amount.div(100).mul(dividendFee_);
+        _transfer(msg.sender, address(this), _dividendFee);
+
+        totalDividend = totalDividend.add(_dividendFee);
+
         uint256 _burntFee = amount.div(burntFee_); // Since coin isn't already created, there's no need to burn it, so instead, we just DON'T create the coin
-        amount = amount.sub(_dividenedFee).sub(_burntFee);
+        amount = amount.sub(_dividendFee).sub(_burntFee);
         _mint(msg.sender, amount);
     }
 
@@ -245,7 +254,10 @@ contract ElonCoinWithPresale is Ownable, ERC20, ERC20Burnable, ERC20Capped {
 
         require(userBalance > 0, "Only holders allowed");
 
-        require(dividendToBeShared > 0, "No token in the pool");
+        require(
+            dividendToBeShared > 0,
+            "No token in the pool, come back later"
+        );
 
         uint256 totalSupply_ =
             totalSupply().sub(presaleTokens).sub(totalDividend);
