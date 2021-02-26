@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../Footer/Footer";
-import Overview from "../Overview/Overview";
-import Presale from "../Presale/Presale";
-import Roadmap from "../Roadmap/Roadmap";
-import Tokenomics from "../Tokenomics/Tokenomics";
-import Header from "../Header/Header";
-import Navbar from "../Navbar/Navbar";
-import Modal from "../Modal/Modal";
+import Footer from "../Footer";
+import Overview from "../Overview";
+import Presale from "../Presale";
+import Roadmap from "../Roadmap";
+import Tokenomics from "../Tokenomics";
+import Header from "../Header";
+import Navbar from "../Navbar";
+import Modal from "../Modal";
 
 import {
   loadWeb3,
