@@ -32,8 +32,8 @@ const Overview = (props) => {
           <img src="money.png" width="30%" alt=""></img>
           <p>Eloncoin is made for going to Mars... with you!</p>
           <p>
-            0.5% of all transactions will be burnt. 3% of every transaction is
-            given back to holders.
+            0.0001% of all transactions will be burnt. 3% of every
+            transaction is given back to holders.
             <br />
             We just couldn’t see the future of Yield-Farming without being part
             of it. Twice.
