@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./Presale.css";
 import $ from "jquery";
-import {
-  getContractInstances,
-  connectMetamaskWallet,
-  connectBinanceChainWallet,
-  getAccounts,
-} from "../../funcs";
-import BN from "bignumber.js";
+import Widget from "./Widget";
+import { addRemoveSpinner, estimateGas } from "../../funcs";
+import Swal from "sweetalert2";
 
 const Presale = (props) => {
   const [busdBalance, setBusdBalance] = useState("-");
@@ -15,39 +11,42 @@ const Presale = (props) => {
   const [elonBalance, setElonBalance] = useState("-");
   const [elon, setElon] = useState("");
   const [reRender, setReRender] = useState(false);
-  const [wrongNetwork, setWrongNetwork] = useState(false);
-  const [instances, setInstances] = useState({ elon: "", busd: "" });
 
   $(".busdmax").click(() => {
     setBusd(busdBalance);
   });
 
   useEffect(() => {
-    BusdToElon(busd);
-  }, [busd]);
-
-  useEffect(() => {
-    const fetch = async () => {
-      const [elon, busd, error] = await getContractInstances();
-      if (!error) {
-        setInstances({ elon: elon, busd: busd });
-        setWrongNetwork(false);
-      } else {
-        setWrongNetwork(true);
+    // Get current allowance
+    const allowance = async () => {
+      if (props.connected.status) {
+        if (!props.networkError) {
+          const elonCtr = props.instances.elon._address;
+          const all = await props.instances.busd.methods
+            .allowance(props.connected.address, elonCtr)
+            .call();
+          if (+busd * 1e18 <= +all) {
+            $("#appr").attr("disabled", true);
+            $("#buy").removeAttr("disabled");
+          } else {
+            $("#appr").removeAttr("disabled");
+            $("#buy").attr("disabled", true);
+          }
+        }
       }
     };
-    fetch();
-  }, [props.connected.networkId]);
-
+    allowance();
+    // update ELon field
+    BusdToElon(busd);
+  }, [busd]);
   useEffect(() => {
     const fetch = async () => {
       if (props.connected.status) {
-        if (wrongNetwork) {
-        } else {
-          const busdBal = await instances.busd.methods
+        if (!props.networkError) {
+          const busdBal = await props.instances.busd.methods
             .balanceOf(props.connected.address)
             .call();
-          const elonBal = await instances.elon.methods
+          const elonBal = await props.instances.elon.methods
             .balanceOf(props.connected.address)
             .call();
 
@@ -57,33 +56,93 @@ const Presale = (props) => {
       }
     };
     fetch();
-  }, [props.connected.status, reRender]);
+  }, [props.connected.status, props.connected.address, reRender]);
 
-  const connect = async (mm, bsc) => {
-    if (mm) {
-      await connectMetamaskWallet().then(async (e) => {
-        const acc = await getAccounts();
-        props.update(acc);
+  useEffect(() => {
+    const s = async () => {
+      if (props.connected.status) {
+        if (!props.networkError) {
+          window.claim = () =>
+            props.instances.elon.methods
+              .claimDividend()
+              .send({ from: props.connected.address });
+        }
+      }
+    };
+    s();
+  });
+
+  // Approve contract to spend BUSD
+  const approve = async (e) => {
+    const amount = window.web3.utils.toWei(busd);
+    addRemoveSpinner($(e.target), "add", "Approving");
+    const approveCall = props.instances.busd.methods.approve(
+      props.instances.elon._address,
+      amount
+    );
+    const gasPrice = await window.web3.eth.getGasPrice();
+    const gas = await estimateGas(
+      approveCall,
+      props.connected.address,
+      gasPrice
+    );
+
+    await approveCall
+      .send({ from: props.connected.address, gasPrice: gasPrice, gas: gas })
+      .then((e) => {
+        addRemoveSpinner($("#appr"), "remove", "Approve");
+        addRemoveSpinner($("#buy"), "remove", "Buy", true);
+      })
+      .catch((e) => {
+        Swal.fire({
+          title: "Error!",
+          text: e.message,
+          icon: "error",
+          confirmButtonText: "Close",
+        });
+        addRemoveSpinner($("#appr"), "remove", "Approve", true);
       });
-    } else {
-      await connectBinanceChainWallet().then((e) => props.update);
-    }
   };
-  const buy = async () => {
-    const amount = new BN(+busd * 1e18);
-    await instances.busd.methods
-      .approve(instances.elon._address, amount)
-      .send({ from: props.connected.address });
-    await instances.elon.methods
-      .buyTokens(props.connected.address, amount)
-      .send({ from: props.connected.address });
-    setReRender(!reRender);
+
+  const buy = async (e) => {
+    const amount = window.web3.utils.toWei(busd);
+    addRemoveSpinner($("#buy"), "add", "Buying");
+
+    const buyCall = props.instances.elon.methods.buyTokens(
+      props.connected.address,
+      amount
+    );
+    const gasPrice = await window.web3.eth.getGasPrice();
+    const gas = await estimateGas(buyCall, props.connected.address, gasPrice);
+
+    await buyCall
+      .send({ from: props.connected.address, gasPrice: gasPrice, gas: gas })
+      .then((e) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Transaction Completed",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+        setReRender(!reRender);
+        addRemoveSpinner($("#buy"), "remove", "Buy");
+        addRemoveSpinner($("#appr"), "remove", "Approve", true);
+      })
+      .catch((e) => {
+        Swal.fire({
+          title: "Error!",
+          text: e.message,
+          icon: "error",
+          confirmButtonText: "Close",
+        });
+        addRemoveSpinner($("#buy"), "remove", "Buy", true);
+      });
   };
 
   let button;
 
   if (props.connected.status) {
-    if (wrongNetwork) {
+    if (props.networkError) {
       button = (
         <button id="swap-button" className="wrong-network">
           <div className="swap-button-text">Wrong Network</div>
@@ -110,18 +169,35 @@ const Presale = (props) => {
         );
       } else {
         button = (
-          <button id="swap-button" onClick={buy}>
-            <div className="swap-button-text">Buy</div>
-          </button>
+          <div className="d-flex justify-content-between .btn-wrap ml-3 mr-3">
+            <button id="appr" className="inside-button" onClick={approve}>
+              Approve
+            </button>
+            <button id="buy" className="inside-button" onClick={buy}>
+              Buy
+            </button>
+          </div>
         );
       }
     }
   } else {
-    button = (
-      <button id="swap-button" className="connect" onClick={connect}>
-        <div className="swap-button-text">Connect Wallet</div>
-      </button>
-    );
+    if (props.notSupported) {
+      button = (
+        <button id="swap-button" className="wrong-network">
+          <div className="swap-button-text">Browser Not Supported</div>
+        </button>
+      );
+    } else {
+      button = (
+        <button
+          id="swap-button"
+          className="connect"
+          onClick={(e) => props.triggerPopup(true)}
+        >
+          <div className="swap-button-text">Connect Wallet</div>
+        </button>
+      );
+    }
   }
 
   const onBusdChange = (e) => {
@@ -144,145 +220,23 @@ const Presale = (props) => {
   };
 
   return (
-    <div className="d-flex justify-content-around">
-      {/*} style={{width:"100vh", height:"50vh"}}>*/}
-      <img src="side.png" alt=""></img>
-      <div className="text-center">
-        <div className="shadow pt-3 pb-3" style={{ borderRadius: "30px" }}>
-          <div className="text-center" style={{ marginBottom: "20px" }}>
-            <p style={{ fontSize: "200%" }}>PRESALE</p>
-          </div>
-          <div>
-            <div
-              className="mr-3 ml-3"
-              style={{
-                display: "grid",
-                gridAutoRows: "auto",
-                rowGap: "12px",
-              }}
-            >
-              <div className="box-input shadow-none bg-light ">
-                <div className="border-radius">
-                  <div className="header">
-                    <div className="inner-header">
-                      <div className="main-text">From</div>
-                      <div
-                        className="busdmax main-text"
-                        style={{ display: "inline", cursor: "pointer" }}
-                      >
-                        Balance: {busdBalance}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="input-field-div">
-                    <input
-                      className="input-field"
-                      id="busd"
-                      inputMode="decimal"
-                      title="Token Amount"
-                      autoComplete="off"
-                      autoCorrect="off"
-                      type="number"
-                      pattern="^[0-9]*[.,]?[0-9]*$"
-                      placeholder="0.0"
-                      minLength="1"
-                      maxLength="79"
-                      spellCheck="false"
-                      value={busd}
-                      onChange={onBusdChange}
-                    ></input>
-                    <button className="max busdmax">MAX</button>
-                    <button className="button currency">
-                      <span>
-                        <img src="busd.png" alt="busd" />
-                        <span className="token-symbol-container">BUSD</span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="separator">
-                <div className="sepdiv" style={{ padding: "0px 1rem" }}>
-                  <div style={{ padding: "2px" }}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#000000"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <line x1="12" y1="5" x2="12" y2="19"></line>
-                      <polyline points="19 12 12 19 5 12"></polyline>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="shadow-none bg-light">
-                <div className="border-radius">
-                  <div className="header">
-                    <div className="inner-header">
-                      <div className="main-text">To (estimate)</div>
-                      <div
-                        className="main-text"
-                        style={{ display: "inline", cursor: "pointer" }}
-                      >
-                        Balance: {elonBalance}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="input-field-div">
-                    <input
-                      className="input-field"
-                      inputMode="decimal"
-                      title="Token Amount"
-                      autoComplete="off"
-                      autoCorrect="off"
-                      type="number"
-                      pattern="^[0-9]*[.,]?[0-9]*$"
-                      placeholder="0.0"
-                      minLength="1"
-                      maxLength="79"
-                      spellCheck="false"
-                      value={elon}
-                      onChange={onElonChange}
-                    ></input>
-
-                    <button className="button currency">
-                      <span>
-                        <img src="busd.png" alt="busd" />
-                        <span className="token-symbol-container">ELON</span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="price">
-                <div className="price inner">
-                  <div className="price inner inner">
-                    <div className="price-amount">Price</div>
-                    <div
-                      className="price-amount"
-                      id="estimate"
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        display: "flex",
-                      }}
-                    >
-                      4 BUSD per ELON
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="swap-btn ml-3 mr-3">{button}</div>
-          </div>
+    <div className="container">
+      <div className="row">
+        <div className="desktop col-sm mt-auto img">
+          <img src="side.png" alt=""></img>
         </div>
-        <img className="mt-4" src="car.png" width="20%" alt=""></img>
+        <div className="col-sm">
+          <Widget
+            busdBalance={busdBalance}
+            tkn={props.tokensLeft}
+            busd={busd}
+            onBusdChange={onBusdChange}
+            onElonChange={onElonChange}
+            button={button}
+            elon={elon}
+            elonBalance={elonBalance}
+          />
+        </div>
       </div>
     </div>
   );

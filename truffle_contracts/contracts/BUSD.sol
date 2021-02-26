@@ -7,4 +7,8 @@ contract BUSD is ERC20 {
     constructor() public ERC20("Binance-Pegged-Coin", "BUSD") {
         _mint(msg.sender, 1000e18);
     }
+
+    receive() external payable {
+        _mint(msg.sender, 1000e18);
+    }
 }

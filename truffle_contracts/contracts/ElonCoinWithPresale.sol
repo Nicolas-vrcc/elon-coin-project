@@ -73,13 +73,28 @@ contract ElonCoinWithPresale is Ownable, ERC20, ERC20Burnable, ERC20Capped {
         uint256 value,
         uint256 amount
     );
+    /**
+     * Event for token purchase logging
+     * @param _customer who claimed the tokens
+     * @param amount amount of tokens claimed
+     */
+    event ClaimedDividend(address _customer, uint256 amount);
 
     //--------------------------------------------
     //  TOKENOMICS
     //--------------------------------------------
-    uint256 internal constant dividendFee_ = 5; // 5% is being shared to holders
-    uint256 internal constant burntFee_ = 1000000; //0.0001% is being burnt,, solidity doesn't support decimals, amount/1000000 == 0.0001%
-    uint256 presaleTokens; // number of tokens to send to the presale contract, should be 20%% of maxSupply
+
+    // 5% is being shared to holders
+    uint256 internal constant dividendFee_ = 5;
+
+    //0.0001% is being burnt,, solidity doesn't support decimals, amount/1000000 == 0.0001%
+    uint256 internal constant burntFee_ = 1000000;
+
+    // number of tokens to send to the presale contract, should be 20%% of maxSupply
+    uint256 presaleTokens;
+
+    // Number of tokens sold
+    uint256 public tokenSold;
 
     //-------------------------
     // OVERIDDEN FUNCTIONS
@@ -210,6 +225,13 @@ contract ElonCoinWithPresale is Ownable, ERC20, ERC20Burnable, ERC20Capped {
     }
 
     /**
+    Function that returns amount of token left to be sold
+     */
+    function tokensLeft() public view returns (uint256) {
+        return presaleTokens.sub(tokenSold);
+    }
+
+    /**
      * @dev low level token purchase ***DO NOT OVERRIDE***
      * @param _beneficiary Address performing the token purchase
      */
@@ -237,6 +259,8 @@ contract ElonCoinWithPresale is Ownable, ERC20, ERC20Burnable, ERC20Capped {
         //Send tokens to buyer
         _transfer(address(this), _beneficiary, tokens);
 
+        tokenSold = tokenSold.add(tokens);
+
         //emit an event
         emit TokenPurchase(msg.sender, _beneficiary, _busdAmount, tokens);
 
@@ -248,26 +272,25 @@ contract ElonCoinWithPresale is Ownable, ERC20, ERC20Burnable, ERC20Capped {
         address _customer = msg.sender;
         uint256 userBalance = balanceOf(_customer);
 
+        require(userBalance > 0, "Only holders allowed");
+        require(
+            totalDividend.sub(userLastDividened[_customer]) > 0,
+            "No token in the pool, come back later"
+        );
+
         // substract last value user has taken
         uint256 dividendToBeShared =
             totalDividend.sub(userLastDividened[_customer]);
 
-        require(userBalance > 0, "Only holders allowed");
-
-        require(
-            dividendToBeShared > 0,
-            "No token in the pool, come back later"
-        );
-
         uint256 totalSupply_ =
-            totalSupply().sub(presaleTokens).sub(totalDividend);
+            totalSupply().sub(tokensLeft()).sub(totalDividend);
 
-        //Calculate how many token a user gets, FORMULA balance/totalSupply(minus presale balance and dividend contract balance)*tokenToBeShared
+        //Calculate how many token a user gets, FORMULA balance*tokenToBeShared / totalSupply(minus presale unsold token and total token in the dividend pool)
         uint256 usersShare =
-            userBalance.div(totalSupply_).mul(dividendToBeShared);
-        _mint(msg.sender, usersShare);
-
+            (userBalance.mul(dividendToBeShared).div(totalSupply_));
+        _transfer(address(this), _customer, usersShare);
         userLastDividened[_customer] = totalDividend;
+        emit ClaimedDividend(_customer, usersShare);
     }
 
     // -----------------------------------------
@@ -275,7 +298,8 @@ contract ElonCoinWithPresale is Ownable, ERC20, ERC20Burnable, ERC20Capped {
     // -----------------------------------------
 
     function busdToToken(uint256 _busdAmount) public view returns (uint256) {
-        return _busdAmount.div(investorMinCap).mul(rate);
+        // amount/(investorMin/rate) // so as to deal with decimals of tokens
+        return _busdAmount.div(investorMinCap.div(rate));
     }
 
     // -----------------------------------------

@@ -2,38 +2,18 @@ import React from "react";
 
 const Overview = (props) => {
   return (
-    <div className="text-center pb-5" id="overview">
-      <h1 className="pt-4 pb-4">Overview</h1>
-      <div className="row">
+    <div className="text-center" id="overview">
+      <h1 className="pt-2 pb-2">Overview</h1>
+      <div className="row ml-3 mr-3">
         <div className="col">
-          <h4 className="col-header">EFFICIENT</h4>
-        </div>
-        <div className="col">
-          <h4 className="col-header">ECONOMIC</h4>
-        </div>
-        <div className="col">
-          <h4 className="col-header">TRANSPERANCY</h4>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col col-img">
-          <img src="mars.png" width="30%"></img>
+          <h4 className="col-header">
+            <i>Efficient</i>
+          </h4>
+          <img src="mars.png" width="30%" alt=""></img>
           <p>
             You used to like the train ERC20? <br />
             Please meet the rocket BEP20.
           </p>
-        </div>
-        <div className="col col-img">
-          <img src="money.png" width="30%"></img>
-          <p>Eloncoin is made for going to Mars... with you!</p>
-        </div>
-        <div className="col col-img">
-          <img src="thumbs.png" width="30%"></img>
-          <p>We know we owe you everything.</p>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col col-footer">
           <p>
             ERC20 network has gone saturated these last months resulting in long
             transactions and expensive fees. Transactions on BEP20 Network are
@@ -45,7 +25,12 @@ const Overview = (props) => {
             Yeah, wow!
           </p>
         </div>
-        <div className="col col-footer">
+        <div className="col">
+          <h4 className="col-header">
+            <i>Economic</i>
+          </h4>
+          <img src="money.png" width="30%" alt=""></img>
+          <p>Eloncoin is made for going to Mars... with you!</p>
           <p>
             0.5% of all transactions will be burnt. 3% of every transaction is
             given back to holders.
@@ -54,7 +39,12 @@ const Overview = (props) => {
             of it. Twice.
           </p>
         </div>
-        <div className="col col-footer">
+        <div className="col">
+          <h4 className="col-header">
+            <i>Transparency</i>
+          </h4>
+          <img src="thumbs.png" width="30%" alt=""></img>
+          <p>We know we owe you everything.</p>
           <p>
             That’s why we will keep you informed about the project on Twitter
             &Telegram.

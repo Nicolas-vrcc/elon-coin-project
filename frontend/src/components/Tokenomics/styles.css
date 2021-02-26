@@ -1,0 +1,17 @@
+.legend {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 10%;
+}
+
+@media screen and (max-width: 1012px) {
+  .legend {
+    display: block;
+    column-count: 3;
+  }
+}
+@media screen and (max-width: 768px) {
+  .legend {
+    column-count: 1;
+  }
+}

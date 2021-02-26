@@ -135,6 +135,48 @@
   flex-wrap: nowrap;
   -webkit-box-align: center;
   align-items: center;
+  position: relative;
+  z-index: 1;
+
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  appearance: none;
+  line-height: inherit;
+  padding: 8px 16px;
+}
+
+.inside-button:disabled {
+  background-color: rgb(221, 223, 228);
+  cursor: default !important;
+  color: rgb(112, 112, 112);
+}
+.inside-button:hover {
+  background-color: rgb(139, 135, 135);
+  /* background-color */
+}
+.inside-button {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  font-size: 20px;
+  font-weight: 500;
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+  box-shadow: none;
+  border: 1px solid transparent;
+  outline: none;
+
+  width: 40%;
+  text-align: center;
+  border-radius: 20px;
+  text-decoration: none;
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  -webkit-box-align: center;
+  align-items: center;
   cursor: pointer;
   position: relative;
   z-index: 1;
@@ -144,20 +186,15 @@
   min-width: 0px;
   appearance: none;
   line-height: inherit;
-  font-size: inherit;
   padding: 8px 16px;
+}
+.btn-wrap {
+  margin-left: 40px;
+  margin-right: 40px;
 }
 
 .wrong-network {
   background-color: rgb(162, 3, 14) !important;
-}
-
-.swap-button-text {
-  box-sizing: border-box;
-  margin: 0px;
-  min-width: 0px;
-  font-size: 20px;
-  font-weight: 500;
 }
 
 .border-radius {
@@ -215,4 +252,17 @@
   align-items: center;
   -webkit-box-pack: justify;
   justify-content: space-between;
+}
+
+img {
+  max-width: 100%;
+}
+.desktop {
+  display: block;
+}
+
+@media screen and (max-width: 1000px) {
+  .desktop {
+    display: none;
+  }
 }
