@@ -1,14 +1,109 @@
-.nav-desktop {
+.nav-desktop-nav {
   display: flex;
   justify-content: space-around;
   padding: 2%;
 }
+.nav-desktop {
+  display: block;
+}
 .nav-mobile {
   display: none;
 }
-.nav-mobile-sm {
-  display: none;
+
+@media screen and (max-width: 680px) {
+  #header {
+    margin-top: 4rem !important;
+  }
+  .nav-desktop {
+    display: none;
+  }
+  .nav-mobile {
+    display: block;
+    overflow: hidden;
+    padding: 5px !important;
+    background-color: rgb(247, 247, 247) !important;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 50;
+  }
+  .nav-mobile a {
+    float: left;
+    display: block;
+    color: #1f1b1b;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+  .nav-mobile a:hover {
+    background: #ddd;
+    color: black;
+  }
+  .connect {
+    color: white !important;
+    background-color: black !important;
+    border-radius: 10px;
+  }
+
+  .sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    background-color: rgb(235, 235, 235);
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 30px;
+    overflow-y: auto;
+  }
+
+  .links {
+    margin-top: 30%;
+  }
+
+  .sidenav a {
+    padding: 5%;
+    width: 100%;
+    text-decoration: none;
+    font-size: 20px;
+    color: black;
+    display: block;
+    transition: 0.3s;
+  }
+
+  .sidenav a:hover {
+    color: black;
+  }
+
+  .sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    font-size: 200%;
+    padding-top: 0px !important;
+    padding-left: 80%;
+  }
 }
+
+@media screen and (max-width: 374px) {
+  .sidenav a {
+    font-size: 10px;
+  }
+}
+@media screen and (max-width: 374px) {
+  .sidenav a {
+    font-size: 15px;
+  }
+
+  .sidenav .closebtn {
+    font-size: 100%;
+  }
+}
+
+/*BUTON LINKS CONFIG*/
+
 a.item {
   border: 3px solid;
   border-radius: 10px;
@@ -24,6 +119,7 @@ a.item {
   color: white !important;
   padding: 7px;
   border-radius: 15px !important;
+  border-color: transparent !important;
 }
 .item.connect-wrong-network {
   float: right;
@@ -53,29 +149,6 @@ a.item {
   text-decoration: none !important;
   background-color: #666 !important;
   color: white !important;
-}
-@media screen and (max-width: 540px) {
-  .nav-desktop {
-    display: none;
-  }
-  .nav-mobile {
-    display: flex;
-    justify-content: space-around;
-    padding: 2%;
-  }
-}
-@media screen and (max-width: 345px) {
-  .nav-desktop {
-    display: none;
-  }
-  .nav-mobile {
-    display: none;
-  }
-  .nav-mobile-sm {
-    display: flex;
-    justify-content: space-around;
-    padding: 2%;
-  }
 }
 
 .social-icon {

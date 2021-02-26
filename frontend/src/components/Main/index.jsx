@@ -95,16 +95,15 @@ const Main = (props) => {
 
   return (
     <>
-      <section id="nav-bar">
-        <Navbar
-          triggerPopup={setShowModal}
-          networkError={wrongNetwork}
-          notSupported={notSupported}
-          connect={connect}
-          connected={{ ...connection }}
-          update={updateConnection}
-        />
-      </section>
+      <Navbar
+        triggerPopup={setShowModal}
+        networkError={wrongNetwork}
+        notSupported={notSupported}
+        connect={connect}
+        connected={{ ...connection }}
+        update={updateConnection}
+      />
+
       <section id="header" className="text-center mt-5 mb-5">
         <Header />
       </section>
