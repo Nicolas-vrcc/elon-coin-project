@@ -220,9 +220,26 @@ const Presale = (props) => {
   };
 
   const arrangeTime = (timestamp) => {
+    const start = timestamp.start;
+    const end = timestamp.end;
+
+    const startDate = new Date(start * 1000);
+    console.log(start);
+    // alert(startDate.toDateString());
+
+    if (Date.now() > start * 1000) {
+      const startDate = new Date(start * 1000);
+      // alert(startDate.toDateString());
+      return { time: "time", state: "not_started" };
+    } else {
+    }
     var date1 = new Date(Date.now());
     var date2 = new Date(Date.now() + timestamp * 1000);
 
+    if (date1.getTime() > date2.getTime()) {
+      alert();
+      return { time: "time", state: "ahead" };
+    }
     // To calculate the time difference of two dates
     var Difference_In_Time = date2.getTime() - date1.getTime();
 
@@ -234,6 +251,9 @@ const Presale = (props) => {
 
     return days;
   };
+  console.log(props.timeLeft);
+
+  arrangeTime(props.timeLeft);
   return (
     <div className="container">
       <div className="row">
@@ -244,7 +264,7 @@ const Presale = (props) => {
           <Widget
             busdBalance={busdBalance}
             tkn={props.tokensLeft}
-            tl={arrangeTime(props.timeLeft)}
+            tl={0}
             busd={busd}
             onBusdChange={onBusdChange}
             onElonChange={onElonChange}

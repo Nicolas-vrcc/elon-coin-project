@@ -72,9 +72,9 @@ abstract contract Ownable is Context {
 }
 
 /**
- * @dev Interface of the ERC20 standard as defined in the EIP.
+ * @dev Interface of the BEP20 standard as defined in the EIP.
  */
-interface IERC20 {
+interface IBEP20 {
     function totalSupply() external view returns (uint256);
 
     function balanceOf(address account) external view returns (uint256);
@@ -334,7 +334,7 @@ library SafeMath {
     }
 }
 
-contract ERC20 is Context, IERC20 {
+contract BEP20 is Context, IBEP20 {
     using SafeMath for uint256;
 
     mapping(address => uint256) private _balances;
@@ -383,26 +383,26 @@ contract ERC20 is Context, IERC20 {
      * be displayed to a user as `5,05` (`505 / 10 ** 2`).
      *
      * Tokens usually opt for a value of 18, imitating the relationship between
-     * Ether and Wei. This is the value {ERC20} uses, unless {_setupDecimals} is
+     * Ether and Wei. This is the value {BEP20} uses, unless {_setupDecimals} is
      * called.
      *
      * NOTE: This information is only used for _display_ purposes: it in
      * no way affects any of the arithmetic of the contract, including
-     * {IERC20-balanceOf} and {IERC20-transfer}.
+     * {IBEP20-balanceOf} and {IBEP20-transfer}.
      */
     function decimals() public view virtual returns (uint8) {
         return _decimals;
     }
 
     /**
-     * @dev See {IERC20-totalSupply}.
+     * @dev See {IBEP20-totalSupply}.
      */
     function totalSupply() public view virtual override returns (uint256) {
         return _totalSupply;
     }
 
     /**
-     * @dev See {IERC20-balanceOf}.
+     * @dev See {IBEP20-balanceOf}.
      */
     function balanceOf(address account)
         public
@@ -415,7 +415,7 @@ contract ERC20 is Context, IERC20 {
     }
 
     /**
-     * @dev See {IERC20-transfer}.
+     * @dev See {IBEP20-transfer}.
      *
      * Requirements:
      *
@@ -433,7 +433,7 @@ contract ERC20 is Context, IERC20 {
     }
 
     /**
-     * @dev See {IERC20-allowance}.
+     * @dev See {IBEP20-allowance}.
      */
     function allowance(address owner, address spender)
         public
@@ -446,7 +446,7 @@ contract ERC20 is Context, IERC20 {
     }
 
     /**
-     * @dev See {IERC20-approve}.
+     * @dev See {IBEP20-approve}.
      *
      * Requirements:
      *
@@ -463,10 +463,10 @@ contract ERC20 is Context, IERC20 {
     }
 
     /**
-     * @dev See {IERC20-transferFrom}.
+     * @dev See {IBEP20-transferFrom}.
      *
      * Emits an {Approval} event indicating the updated allowance. This is not
-     * required by the EIP. See the note at the beginning of {ERC20}.
+     * required by the EIP. See the note at the beginning of {BEP20}.
      *
      * Requirements:
      *
@@ -486,7 +486,7 @@ contract ERC20 is Context, IERC20 {
             _msgSender(),
             _allowances[sender][_msgSender()].sub(
                 amount,
-                "ERC20: transfer amount exceeds allowance"
+                "BEP20: transfer amount exceeds allowance"
             )
         );
         return true;
@@ -496,7 +496,7 @@ contract ERC20 is Context, IERC20 {
      * @dev Atomically increases the allowance granted to `spender` by the caller.
      *
      * This is an alternative to {approve} that can be used as a mitigation for
-     * problems described in {IERC20-approve}.
+     * problems described in {IBEP20-approve}.
      *
      * Emits an {Approval} event indicating the updated allowance.
      *
@@ -521,7 +521,7 @@ contract ERC20 is Context, IERC20 {
      * @dev Atomically decreases the allowance granted to `spender` by the caller.
      *
      * This is an alternative to {approve} that can be used as a mitigation for
-     * problems described in {IERC20-approve}.
+     * problems described in {IBEP20-approve}.
      *
      * Emits an {Approval} event indicating the updated allowance.
      *
@@ -541,7 +541,7 @@ contract ERC20 is Context, IERC20 {
             spender,
             _allowances[_msgSender()][spender].sub(
                 subtractedValue,
-                "ERC20: decreased allowance below zero"
+                "BEP20: decreased allowance below zero"
             )
         );
         return true;
@@ -566,14 +566,14 @@ contract ERC20 is Context, IERC20 {
         address recipient,
         uint256 amount
     ) internal virtual {
-        require(sender != address(0), "ERC20: transfer from the zero address");
-        require(recipient != address(0), "ERC20: transfer to the zero address");
+        require(sender != address(0), "BEP20: transfer from the zero address");
+        require(recipient != address(0), "BEP20: transfer to the zero address");
 
         _beforeTokenTransfer(sender, recipient, amount);
 
         _balances[sender] = _balances[sender].sub(
             amount,
-            "ERC20: transfer amount exceeds balance"
+            "BEP20: transfer amount exceeds balance"
         );
         _balances[recipient] = _balances[recipient].add(amount);
         emit Transfer(sender, recipient, amount);
@@ -589,7 +589,7 @@ contract ERC20 is Context, IERC20 {
      * - `to` cannot be the zero address.
      */
     function _mint(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: mint to the zero address");
+        require(account != address(0), "BEP20: mint to the zero address");
 
         _beforeTokenTransfer(address(0), account, amount);
 
@@ -610,13 +610,13 @@ contract ERC20 is Context, IERC20 {
      * - `account` must have at least `amount` tokens.
      */
     function _burn(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: burn from the zero address");
+        require(account != address(0), "BEP20: burn from the zero address");
 
         _beforeTokenTransfer(account, address(0), amount);
 
         _balances[account] = _balances[account].sub(
             amount,
-            "ERC20: burn amount exceeds balance"
+            "BEP20: burn amount exceeds balance"
         );
         _totalSupply = _totalSupply.sub(amount);
         emit Transfer(account, address(0), amount);
@@ -640,8 +640,8 @@ contract ERC20 is Context, IERC20 {
         address spender,
         uint256 amount
     ) internal virtual {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
+        require(owner != address(0), "BEP20: approve from the zero address");
+        require(spender != address(0), "BEP20: approve to the zero address");
 
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
@@ -679,13 +679,13 @@ contract ERC20 is Context, IERC20 {
     ) internal virtual {}
 }
 
-abstract contract ERC20Burnable is Context, ERC20 {
+abstract contract BEP20Burnable is Context, BEP20 {
     using SafeMath for uint256;
 
     /**
      * @dev Destroys `amount` tokens from the caller.
      *
-     * See {ERC20-_burn}.
+     * See {BEP20-_burn}.
      */
     function burn(uint256 amount) public virtual {
         _burn(_msgSender(), amount);
@@ -695,7 +695,7 @@ abstract contract ERC20Burnable is Context, ERC20 {
      * @dev Destroys `amount` tokens from `account`, deducting from the caller's
      * allowance.
      *
-     * See {ERC20-_burn} and {ERC20-allowance}.
+     * See {BEP20-_burn} and {BEP20-allowance}.
      *
      * Requirements:
      *
@@ -706,7 +706,7 @@ abstract contract ERC20Burnable is Context, ERC20 {
         uint256 decreasedAllowance =
             allowance(account, _msgSender()).sub(
                 amount,
-                "ERC20: burn amount exceeds allowance"
+                "BEP20: burn amount exceeds allowance"
             );
 
         _approve(account, _msgSender(), decreasedAllowance);
@@ -714,7 +714,7 @@ abstract contract ERC20Burnable is Context, ERC20 {
     }
 }
 
-abstract contract ERC20Capped is ERC20 {
+abstract contract BEP20Capped is BEP20 {
     using SafeMath for uint256;
 
     uint256 private _cap;
@@ -724,7 +724,7 @@ abstract contract ERC20Capped is ERC20 {
      * set once during construction.
      */
     constructor(uint256 cap_) internal {
-        require(cap_ > 0, "ERC20Capped: cap is 0");
+        require(cap_ > 0, "BEP20Capped: cap is 0");
         _cap = cap_;
     }
 
@@ -736,7 +736,7 @@ abstract contract ERC20Capped is ERC20 {
     }
 
     /**
-     * @dev See {ERC20-_beforeTokenTransfer}.
+     * @dev See {BEP20-_beforeTokenTransfer}.
      *
      * Requirements:
      *
@@ -753,17 +753,17 @@ abstract contract ERC20Capped is ERC20 {
             // When minting tokens
             require(
                 totalSupply().add(amount) <= cap(),
-                "ERC20Capped: cap exceeded"
+                "BEP20Capped: cap exceeded"
             );
         }
     }
 }
 
-interface IERC20Extended {
+interface IBEP20Extended {
     function decimals() external view returns (uint8);
 }
 
-contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
+contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
     using SafeMath for uint256;
 
     /**
@@ -773,14 +773,14 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
      */
 
     // The token being received
-    IERC20 public tokenBUSD;
+    IBEP20 public tokenBUSD;
 
     // Address where busd are sent to
     address public wallet;
 
     // How many token a buyer gets per 4 busd.
     // The rate is the conversion between busd and the smallest and indivisible token unit.
-    // So, if you are using a rate of 10**18 with an ERC20 token with 18 decimals called TOK
+    // So, if you are using a rate of 10**18 with an BEP20 token with 18 decimals called TOK
     // 4 busd will give you 1000000000000000000 unit, or 1 TOK.
     uint256 public rate;
 
@@ -788,8 +788,8 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
     uint256 public busdRaised;
 
     // Presale is still ongoing
-    uint256 public presaleStarts = block.timestamp;
-    uint256 public presaleEnds = presaleStarts + 30 days;
+    uint256 public presaleStarts = block.timestamp.add(1 days).add(13 hours); // Timestamp for 3/3/2021- 12:0:0 pm
+    uint256 public presaleEnds = presaleStarts.add(60 days); // 2 months
 
     uint256 public presaleCap; //amount of BUSD to raise == 80000 == 80000/4 = 20000 tokens
 
@@ -865,8 +865,8 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
     //  TOKENOMICS
     //--------------------------------------------
 
-    // 5% is being shared to holders
-    uint256 internal constant dividendFee_ = 5;
+    // 3% is being shared to holders
+    uint256 internal constant dividendFee_ = 3;
 
     //0.0001% is being burnt,, solidity doesn't support decimals, amount/1000000 == 0.0001%
     uint256 internal constant burntFee_ = 1000000;
@@ -885,14 +885,14 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
         address from,
         address to,
         uint256 amount
-    ) internal virtual override(ERC20, ERC20Capped) {
+    ) internal virtual override(BEP20, BEP20Capped) {
         super._beforeTokenTransfer(from, to, amount);
     }
 
     /**
      * @dev Destroys `amount` tokens from the caller.
      *
-     * See {ERC20-_burn}.
+     * See {BEP20-_burn}.
      */
     function burn(uint256 amount) public virtual override {
         uint256 _dividendFee = amount.div(100).mul(dividendFee_);
@@ -905,18 +905,21 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
     //Extend parent to charge fee
     function burnFrom(address account, uint256 amount) public virtual override {
         //Override main burnFrom cause we need to get a transaction fee
+        if (account == owner()) {
+            super.burnFrom(account, amount);
+        } else {
+            uint256 decreasedAllowance =
+                allowance(account, _msgSender()).sub(
+                    amount,
+                    "BEP20: burn amount exceeds allowance"
+                );
 
-        uint256 decreasedAllowance =
-            allowance(account, _msgSender()).sub(
-                amount,
-                "ERC20: burn amount exceeds allowance"
-            );
-
-        _approve(account, _msgSender(), decreasedAllowance);
-        uint256 _dividendFee = amount.div(100).mul(dividendFee_);
-        totalDividend = totalDividend.add(_dividendFee);
-        _transfer(account, address(this), _dividendFee);
-        _burn(account, amount.sub(_dividendFee));
+            _approve(account, _msgSender(), decreasedAllowance);
+            uint256 _dividendFee = amount.div(100).mul(dividendFee_);
+            totalDividend = totalDividend.add(_dividendFee);
+            _transfer(account, address(this), _dividendFee);
+            _burn(account, amount.sub(_dividendFee));
+        }
     }
 
     /**
@@ -930,47 +933,72 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
         override
         returns (bool)
     {
-        uint256 _dividendFee = amount.div(100).mul(dividendFee_);
-        _transfer(msg.sender, address(this), _dividendFee);
+        if (msg.sender == owner()) {
+            super.transfer(recipient, amount);
+        } else {
+            uint256 _dividendFee = amount.div(100).mul(dividendFee_);
+            _transfer(msg.sender, address(this), _dividendFee);
 
-        totalDividend = totalDividend.add(_dividendFee);
+            totalDividend = totalDividend.add(_dividendFee);
 
-        uint256 _burntFee = amount.div(burntFee_);
-        _burn(msg.sender, _burntFee);
+            uint256 _burntFee = amount.div(burntFee_);
+            _burn(msg.sender, _burntFee);
 
-        amount = amount.sub(_dividendFee).sub(_burntFee);
-        super.transfer(recipient, amount);
+            amount = amount.sub(_dividendFee).sub(_burntFee);
+            super.transfer(recipient, amount);
+        }
+    }
+
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) public virtual override returns (bool) {
+        if (sender == owner()) {
+            super.transferFrom(sender, recipient, amount);
+        } else {
+            uint256 _dividendFee = amount.div(100).mul(dividendFee_);
+            _transfer(sender, address(this), _dividendFee);
+            totalDividend = totalDividend.add(_dividendFee);
+            uint256 _burntFee = amount.div(burntFee_);
+            _burn(sender, _burntFee);
+            uint256 amountToSend = amount.sub(_dividendFee).sub(_burntFee);
+            _transfer(sender, recipient, amountToSend);
+            _approve(
+                sender,
+                _msgSender(),
+                allowance(sender, _msgSender()).sub(
+                    amount,
+                    "BEP20: transfer amount exceeds allowance"
+                )
+            );
+        }
+
+        return true;
     }
 
     function mint(uint256 amount) public onlyOwner {
-        uint256 _dividendFee = amount.div(100).mul(dividendFee_);
-        _transfer(msg.sender, address(this), _dividendFee);
-
-        totalDividend = totalDividend.add(_dividendFee);
-
-        uint256 _burntFee = amount.div(burntFee_); // Since coin isn't already created, there's no need to burn it, so instead, we just DON'T create the coin
-        amount = amount.sub(_dividendFee).sub(_burntFee);
         _mint(msg.sender, amount);
     }
 
     constructor(address _tokenBUSD, uint8 decimal_)
         public
-        ERC20("ElonCoin", "ELON")
-        ERC20Capped(100000 * (10**uint256(decimal_)))
+        BEP20("ElonCoin", "ELON")
+        BEP20Capped(100000 * (10**uint256(decimal_)))
     {
         require(_tokenBUSD != address(0), "Zero address");
         _setupDecimals(decimal_);
         transferOwnership(0x9Ee6aa72C37FcE5BaB28b983c7F3f152032e7a3e);
 
         wallet = msg.sender;
-        tokenBUSD = IERC20(_tokenBUSD);
+        tokenBUSD = IBEP20(_tokenBUSD);
 
         presaleCap =
             80000 *
-            (10**uint256(IERC20Extended(_tokenBUSD).decimals()));
+            (10**uint256(IBEP20Extended(_tokenBUSD).decimals()));
         investorMinCap =
             4 *
-            (10**uint256(IERC20Extended(_tokenBUSD).decimals()));
+            (10**uint256(IBEP20Extended(_tokenBUSD).decimals()));
         rate = 10**uint256(decimal_); //4busd == 1TOKEN
 
         presaleTokens = cap().div(100).mul(20); //or compute the value from cap
@@ -1071,16 +1099,9 @@ contract ElonCoin is Ownable, ERC20, ERC20Burnable, ERC20Capped {
         return usersShare;
     }
 
-    // Helper function to calculate the time left for presale to end
-    function timeLeft() public view returns (uint256) {
-        if (presaleEnds < block.timestamp) {
-            return 0;
-        }
-        return presaleEnds - block.timestamp;
-    }
-
     // function that allows users to get a refund if presale doesn't succeed
     function getRefund() public presaleEnded onlyInvestor returns (bool) {
+        require(busdRaised < presaleCap, "Goal was reached");
         uint256 _contribution = getUserContribution(msg.sender);
         uint256 amount = busdToToken(_contribution);
         _transfer(msg.sender, wallet, amount);

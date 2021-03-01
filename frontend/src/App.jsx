@@ -29,7 +29,7 @@ const App = (props) => {
   const [notSupported, setNotSupported] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [tokensLeft, setTokensLeft] = useState("100000");
-  const [timeLeft, setTimeLeft] = useState(Date.now);
+  const [timeLeft, setTimeLeft] = useState({ start: 0, end: 0 });
 
   useEffect(() => {
     const event = async () => {
@@ -70,9 +70,10 @@ const App = (props) => {
       } else {
         setInstances({ elon: elon, busd: busd });
         const tknLeft = await elon.methods.tokensLeft().call();
-        const tmeLeft = await elon.methods.timeLeft().call();
+        const start = await elon.methods.presaleStarts().call();
+        const end = await elon.methods.presaleEnds().call();
         setTokensLeft(tknLeft / 1e18);
-        setTimeLeft(tmeLeft);
+        setTimeLeft({ start: start, end: end });
         setNotSupported(false);
         setWrongNetwork(false);
       }

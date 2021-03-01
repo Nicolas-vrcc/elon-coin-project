@@ -1,13 +1,15 @@
 const BUSD = artifacts.require("BUSD");
 const ElonCoin = artifacts.require("ElonCoin");
 
-module.exports = async (deployer) => {
-  // await deployer.deploy(BUSD)
-  const busdToken = await BUSD.deployed();
+module.exports = async (deployer, network, [account]) => {
+  let busdAddress;
+  if (network == "testnet" || network == "ganache") {
+    await deployer.deploy(BUSD);
+    busdAddress = (await BUSD.deployed()).address;
+  } else {
+    busdAddress = "0xe9e7cea3dedca5984780bafc599bd69add087d56";
+  }
 
-  await deployer.deploy(ElonCoin, busdToken.address, 18);
-  const ElonCoin = await ElonCoin.deployed();
-
-  // await deployer.deploy(Dividend, elonCoin.address, presale.address)
-  // const dividend = await Dividend.deployed()
+  await deployer.deploy(ElonCoin, busdAddress, 18);
+  const elonCoin = await ElonCoin.deployed();
 };

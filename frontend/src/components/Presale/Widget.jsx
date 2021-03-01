@@ -11,7 +11,7 @@ const Widget = (props) => {
               <small className="text-danger ">Ended</small>
             ) : (
               <small>
-                Ends in{" "}
+                Ends in
                 <b className="text-danger ">{props.tl.toFixed(0)} days(s)</b>
               </small>
             )}

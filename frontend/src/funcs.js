@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import ElonCoinWithPresale from "./abi/ElonCoinWithPresale.json";
+import ElonCoin from "./abi/ElonCoin.json";
 import BUSDToken from "./abi/BUSD.json";
 
 export const loadWeb3 = () => {
@@ -22,12 +22,12 @@ export const getContractInstances = async () => {
 
   if (!web3.message) {
     const MetamaskNetwork = await web3.eth.getChainId();
-    const contractNetwork = ElonCoinWithPresale.networks[MetamaskNetwork];
+    const contractNetwork = ElonCoin.networks[MetamaskNetwork];
 
     if (contractNetwork) {
       //ElonCoin
-      const elonABI = ElonCoinWithPresale.abi;
-      const elonAddress = ElonCoinWithPresale.networks[MetamaskNetwork].address;
+      const elonABI = ElonCoin.abi;
+      const elonAddress = ElonCoin.networks[MetamaskNetwork].address;
       const elonInstance = await new web3.eth.Contract(elonABI, elonAddress);
 
       //BUSD

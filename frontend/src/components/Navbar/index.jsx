@@ -3,20 +3,48 @@ import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar = (props) => {
+  const scrollTo = (id, offset = 70) => {
+    var element = document.getElementById(id).offsetTop;
+    window.scrollTo({ top: element - offset, behavior: "smooth" });
+  };
   return (
     <>
       <div className="nav-desktop">
         <div className="nav-desktop-nav">
-          <a href="/#overview" className="item">
+          <a
+            href="#/"
+            className="item"
+            onClick={() => {
+              scrollTo("overview");
+            }}
+          >
             OVERVIEW
           </a>
-          <a href="/#roadmap" className="item">
+          <a
+            href="#/"
+            className="item"
+            onClick={() => {
+              scrollTo("roadmap");
+            }}
+          >
             ROADMAP
           </a>
-          <a href="/#tokenomic" className="item">
+          <a
+            href="#/"
+            className="item"
+            onClick={() => {
+              scrollTo("tokenomic");
+            }}
+          >
             TOKENOMIC
           </a>
-          <a href="/#presale" className="item">
+          <a
+            href="#/"
+            className="item"
+            onClick={() => {
+              scrollTo("presale");
+            }}
+          >
             PRESALE
           </a>
           <Link to="/claim" className="item">
@@ -55,15 +83,19 @@ const Navbar = (props) => {
             </a>
           )}
         </div>
+
         <div className="container">
           <div className="d-flex justify-content-end">
-            <a className="social-icon mr-3" href="//t.me/eloncoin">
+            <a className="social-icon mr-3" href="//t.me/EloncoinOfficialChat">
               <i className="fa fa-telegram" />
             </a>
-            <a href="//twitter.com/eloncoin" className="social-icon mr-3">
+            <a
+              href="//mobile.twitter.com/TheRealEloncoin"
+              className="social-icon mr-3"
+            >
               <i className="fa fa-twitter" />
             </a>
-            <a className="social-icon" href="//medium.com/@eloncoin">
+            <a className="social-icon" href="//therealeloncoin.medium.com/">
               <i className="fa fa-medium " />
             </a>
           </div>
@@ -128,19 +160,58 @@ const Navbar = (props) => {
             <i className="fa fa-times"></i>
           </a>
           <div className="links">
-            <a href="/#overview">Overview</a>
-            <a href="/#roadmap">Roadmap</a>
-            <a href="/#tokenomic">Tokenomic</a>
-            <a href="/#presale">Presale</a>
+            <a
+              href="#/"
+              onClick={() => {
+                scrollTo("overview");
+              }}
+            >
+              Overview
+            </a>
+            <a
+              href="#/"
+              onClick={() => {
+                scrollTo("roadmap");
+              }}
+            >
+              Roadmap
+            </a>
+            <a
+              href="#/"
+              onClick={() => {
+                scrollTo("tokenomic");
+              }}
+            >
+              Tokenomic
+            </a>
+            <a
+              href="#/"
+              onClick={() => {
+                scrollTo("presale");
+              }}
+            >
+              Presale
+            </a>
             <Link to="/claim">Claim Dividends</Link>
-
-            <a href="//t.me/eloncoin" target="_blank" rel="noreferrer">
+            <a
+              href="//t.me/EloncoinOfficialChat"
+              target="_blank"
+              rel="noreferrer"
+            >
               Telegram
             </a>
-            <a href="//twitter.com/eloncoin" target="_blank" rel="noreferrer">
+            <a
+              href="//twitter.com/TheRealEloncoin"
+              target="_blank"
+              rel="noreferrer"
+            >
               Twitter
             </a>
-            <a href="//medium.com/@eloncoin" target="_blank" rel="noreferrer">
+            <a
+              href="//therealeloncoin.medium.com"
+              target="_blank"
+              rel="noreferrer"
+            >
               Medium
             </a>
           </div>
