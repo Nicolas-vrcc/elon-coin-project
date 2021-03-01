@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../Footer";
-import Overview from "../Overview";
-import Presale from "../Presale";
-import Roadmap from "../Roadmap";
-import Tokenomics from "../Tokenomics";
-import Header from "../Header";
-import Navbar from "../Navbar";
-import Modal from "../Modal";
+import Footer from "./components/Footer";
+import Overview from "./components/Overview";
+import Presale from "./components/Presale";
+import Roadmap from "./components/Roadmap";
+import Tokenomics from "./components/Tokenomics";
+import Header from "./components/Header";
+import Navbar from "./components/Navbar";
+import Modal from "./components/Modal";
+import Claim from "./components/Claim";
+import { Route, Switch } from "react-router-dom";
 
 import {
   loadWeb3,
   getContractInstances,
   connectWallet,
   getAccounts,
-} from "../../funcs";
+} from "./funcs";
 
-const Main = (props) => {
+const App = (props) => {
   const [connection, setConnection] = useState({
     status: false,
     address: "",
@@ -27,6 +29,7 @@ const Main = (props) => {
   const [notSupported, setNotSupported] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [tokensLeft, setTokensLeft] = useState("100000");
+  const [timeLeft, setTimeLeft] = useState(Date.now);
 
   useEffect(() => {
     const event = async () => {
@@ -67,7 +70,9 @@ const Main = (props) => {
       } else {
         setInstances({ elon: elon, busd: busd });
         const tknLeft = await elon.methods.tokensLeft().call();
+        const tmeLeft = await elon.methods.timeLeft().call();
         setTokensLeft(tknLeft / 1e18);
+        setTimeLeft(tmeLeft);
         setNotSupported(false);
         setWrongNetwork(false);
       }
@@ -95,41 +100,59 @@ const Main = (props) => {
 
   return (
     <>
-      <Navbar
-        triggerPopup={setShowModal}
-        networkError={wrongNetwork}
-        notSupported={notSupported}
-        connect={connect}
-        connected={{ ...connection }}
-        update={updateConnection}
-      />
-
-      <section id="header" className="text-center mt-5 mb-5">
-        <Header />
-      </section>
-      <section id="presale" className="mt-2">
-        <Presale
-          triggerPopup={setShowModal}
-          networkError={wrongNetwork}
-          notSupported={notSupported}
-          tokensLeft={tokensLeft}
-          instances={instances}
-          connect={connect}
-          connected={{ ...connection }}
-          update={updateConnection}
-        />
-      </section>
-      <section style={{ backgroundColor: "black", color: "white" }}>
-        <Overview />
-        <Roadmap />
-        <Tokenomics />
-      </section>
-      <section id="footer" className="mt-1">
-        <Footer />
-      </section>
+      <Switch>
+        <Route path="/" exact>
+          <>
+            <Navbar
+              triggerPopup={setShowModal}
+              networkError={wrongNetwork}
+              notSupported={notSupported}
+              connect={connect}
+              connected={{ ...connection }}
+              update={updateConnection}
+            />
+            <section id="header" className="text-center mt-5 mb-5">
+              <Header />
+            </section>
+            <section id="presale" className="mt-2">
+              <Presale
+                triggerPopup={setShowModal}
+                networkError={wrongNetwork}
+                notSupported={notSupported}
+                tokensLeft={tokensLeft}
+                timeLeft={timeLeft}
+                instances={instances}
+                connect={connect}
+                connected={{ ...connection }}
+                update={updateConnection}
+              />
+            </section>
+            <section style={{ backgroundColor: "black", color: "white" }}>
+              <Overview />
+              <Roadmap />
+              <Tokenomics />
+            </section>
+            <section id="footer" className="mt-1">
+              <Footer />
+            </section>
+          </>
+        </Route>
+        <Route path="/claim" exact>
+          <Claim
+            triggerPopup={setShowModal}
+            networkError={wrongNetwork}
+            notSupported={notSupported}
+            elon={instances.elon}
+            connect={connect}
+            connected={{ ...connection }}
+            update={updateConnection}
+          />
+        </Route>
+        <Route>404</Route>
+      </Switch>
       <Modal connect={connect} show={showModal} handleClose={setShowModal} />
     </>
   );
 };
 
-export default Main;
+export default App;

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar = (props) => {
@@ -18,6 +19,9 @@ const Navbar = (props) => {
           <a href="/#presale" className="item">
             PRESALE
           </a>
+          <Link to="/claim" className="item">
+            CLAIM DIVIDEND
+          </Link>
           {props.connected.status ? (
             props.networkError ? (
               <button className="item connect-wrong-network">
@@ -128,6 +132,7 @@ const Navbar = (props) => {
             <a href="/#roadmap">Roadmap</a>
             <a href="/#tokenomic">Tokenomic</a>
             <a href="/#presale">Presale</a>
+            <Link to="/claim">Claim Dividends</Link>
 
             <a href="//t.me/eloncoin" target="_blank" rel="noreferrer">
               Telegram

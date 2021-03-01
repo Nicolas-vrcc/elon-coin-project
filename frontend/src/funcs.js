@@ -49,7 +49,7 @@ export const addRemoveSpinner = (element, type, innerHTML, forced) => {
   if (type === "add") {
     element.attr("disabled", true);
     element.html(
-      `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span class="sr-only">${innerHTML}LOADING...</span>`
+      `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span class="sr-only"></span> ${innerHTML}`
     );
   } else {
     if (forced) element.removeAttr("disabled");

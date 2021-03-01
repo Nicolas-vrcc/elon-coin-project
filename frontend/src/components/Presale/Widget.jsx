@@ -5,8 +5,20 @@ const Widget = (props) => {
     <>
       <div className="shadow pt-3 pb-3" style={{ borderRadius: "30px" }}>
         <div className="text-center" style={{ marginBottom: "20px" }}>
-          <div style={{ fontSize: "200%" }}>PRESALE</div>
+          <div style={{ fontSize: "200%" }}>
+            PRESALE (
+            {props.tl < 0 ? (
+              <small className="text-danger ">Ended</small>
+            ) : (
+              <small>
+                Ends in{" "}
+                <b className="text-danger ">{props.tl.toFixed(0)} days(s)</b>
+              </small>
+            )}
+            )
+          </div>
           <b>{props.tkn} ELON Left</b>
+          <br></br>
         </div>
         <div>
           <div
@@ -26,7 +38,7 @@ const Widget = (props) => {
                       className="busdmax main-text"
                       style={{ display: "inline", cursor: "pointer" }}
                     >
-                      Balance: {props.busdBalance}
+                      Balance: {props.busdBalance.toFixed(4)}
                     </div>
                   </div>
                 </div>
@@ -86,7 +98,7 @@ const Widget = (props) => {
                       className="main-text"
                       style={{ display: "inline", cursor: "pointer" }}
                     >
-                      Balance: {props.elonBalance}
+                      Balance: {props.elonBalance.toFixed(4)}
                     </div>
                   </div>
                 </div>

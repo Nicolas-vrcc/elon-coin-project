@@ -6,9 +6,9 @@ import { addRemoveSpinner, estimateGas } from "../../funcs";
 import Swal from "sweetalert2";
 
 const Presale = (props) => {
-  const [busdBalance, setBusdBalance] = useState("-");
+  const [busdBalance, setBusdBalance] = useState(0);
   const [busd, setBusd] = useState("");
-  const [elonBalance, setElonBalance] = useState("-");
+  const [elonBalance, setElonBalance] = useState(0);
   const [elon, setElon] = useState("");
   const [reRender, setReRender] = useState(false);
 
@@ -219,6 +219,21 @@ const Presale = (props) => {
     setElon(elonEquivalent);
   };
 
+  const arrangeTime = (timestamp) => {
+    var date1 = new Date(Date.now());
+    var date2 = new Date(Date.now() + timestamp * 1000);
+
+    // To calculate the time difference of two dates
+    var Difference_In_Time = date2.getTime() - date1.getTime();
+
+    // To calculate the no. of days between two dates
+    var days = Difference_In_Time / (1000 * 3600 * 24);
+    // var hours = days * 24;
+    // var minute = hours * 60;
+    // var seconds = minute * 60;
+
+    return days;
+  };
   return (
     <div className="container">
       <div className="row">
@@ -229,6 +244,7 @@ const Presale = (props) => {
           <Widget
             busdBalance={busdBalance}
             tkn={props.tokensLeft}
+            tl={arrangeTime(props.timeLeft)}
             busd={busd}
             onBusdChange={onBusdChange}
             onElonChange={onElonChange}
