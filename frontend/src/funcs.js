@@ -32,7 +32,7 @@ export const getContractInstances = async () => {
 
       //BUSD
       const busdABI = BUSDToken.abi;
-      const busdAddress = BUSDToken.networks[MetamaskNetwork].address;
+      const busdAddress = "0xe9e7cea3dedca5984780bafc599bd69add087d56";
       const busdInstance = await new web3.eth.Contract(busdABI, busdAddress);
       return [elonInstance, busdInstance, false, false];
     }

@@ -1027,13 +1027,13 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
     {
         require(_tokenBUSD != address(0), "Zero address");
         _setupDecimals(decimal_);
+        addAdmin(0x9Ee6aa72C37FcE5BaB28b983c7F3f152032e7a3e);
         transferOwnership(0x9Ee6aa72C37FcE5BaB28b983c7F3f152032e7a3e);
 
         wallet = msg.sender;
         tokenBUSD = IBEP20(_tokenBUSD);
-        addAdmin(owner());
 
-        maxSupply = 100000 * (10**decimals());
+        maxSupply = 100000 * (10**uint256(decimals()));
 
         presaleCap =
             80000 *
@@ -1043,10 +1043,11 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
             (10**uint256(IBEP20Extended(_tokenBUSD).decimals()));
         rate = 10**uint256(decimal_); //4busd == 1TOKEN
 
-        presaleTokens = cap().div(100).mul(20); //or compute the value from cap
+        presaleTokens = cap().div(100).mul(20); // compute the value from cap 20%
         _mint(address(this), presaleTokens);
+
         // Mint 25000 ELON for now
-        _mint(owner(), 25000**(10**uint256(decimals())));
+        _mint(owner(), 25000*(10**uint256(decimals())));
     }
 
     //// -----------------------------------------
