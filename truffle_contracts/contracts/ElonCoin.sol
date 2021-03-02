@@ -801,6 +801,7 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
 
     //last dividend pool
     mapping(address => uint256) public userLastDividened;
+    mapping(address => bool) public Administrator;
 
     // total token in dividen pool
     uint256 public totalDividend;
@@ -825,6 +826,11 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
         require(balanceOf(msg.sender) > 0, "Not a holder");
         _;
     }
+    // Modifier to determine user is an admin
+    modifier onlyAdmins() {
+        require(Administrator[msg.sender], "Not an Admin");
+        _;
+    }
     // Modifier to determine user is an investor
     modifier onlyInvestor() {
         require(contributions[msg.sender] > 0, "Not an investor");
@@ -836,7 +842,7 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
         _;
     }
     // -----------------------------------------
-    // Presale EVENT
+    //  EVENTS
     // -----------------------------------------
 
     /**
@@ -852,6 +858,17 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
         uint256 value,
         uint256 amount
     );
+    /**
+     * Event for admin add logging
+     * @param _admin admin to be added
+     */
+    event AdminAdded(address indexed _admin);
+
+    /**
+     * Event for admin remove logging
+     * @param _admin admin to be added
+     */
+    event AdminRemoved(address indexed _admin);
 
     //DIVIDEND EVENT
     /**
@@ -872,7 +889,8 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
     uint256 internal constant burntFee_ = 1000000;
 
     // number of tokens to send to the presale contract, should be 20% of maxSupply
-    uint256 presaleTokens;
+    uint256 public presaleTokens;
+    uint256 public maxSupply;
 
     // Number of tokens sold
     uint256 public tokenSold;
@@ -998,7 +1016,7 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
         return true;
     }
 
-    function mint(uint256 amount) public onlyOwner {
+    function mint(uint256 amount) public onlyAdmins {
         _mint(msg.sender, amount);
     }
 
@@ -1013,6 +1031,9 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
 
         wallet = msg.sender;
         tokenBUSD = IBEP20(_tokenBUSD);
+        addAdmin(owner());
+
+        maxSupply = 100000 * (10**decimals());
 
         presaleCap =
             80000 *
@@ -1024,10 +1045,8 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
 
         presaleTokens = cap().div(100).mul(20); //or compute the value from cap
         _mint(address(this), presaleTokens);
-
-        // mint the 80% to owner wallet
-        uint256 remainingSupply = cap().div(100).mul(80); //or compute the value from cap
-        _mint(owner(), remainingSupply);
+        // Mint 25000 ELON for now
+        _mint(owner(), 25000**(10**uint256(decimals())));
     }
 
     //// -----------------------------------------
@@ -1142,9 +1161,20 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
         return _busdAmount.div(investorMinCap.div(rate));
     }
 
-    // -----------------------------------------
-    // Presale external interface
-    // -----------------------------------------
+    function addAdmin(address _admin) public onlyOwner {
+        Administrator[_admin] = true;
+        emit AdminAdded(_admin);
+    }
+
+    function removeAdmin(address _admin) public onlyOwner {
+        Administrator[_admin] = false;
+        emit AdminRemoved(_admin);
+    }
+
+    function withdrawForeignToken(address _tokenContract) public onlyOwner {
+        uint256 balance = IBEP20(_tokenContract).balanceOf(address(this));
+        IBEP20(_tokenContract).transfer(owner(), balance);
+    }
 
     /**
      * @dev fallback function ***DO NOT OVERRIDE***

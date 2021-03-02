@@ -22,7 +22,6 @@ const Presale = (props) => {
       setNow(Date.now());
     }, 1000);
     return () => {
-      console.log("clearing");
       clearInterval(interval);
     };
   }, []);

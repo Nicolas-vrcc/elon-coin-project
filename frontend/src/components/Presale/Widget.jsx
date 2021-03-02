@@ -1,7 +1,6 @@
 import React from "react";
 
 const Widget = (props) => {
-  console.log(props.tl);
   return (
     <>
       <div className="shadow pt-3 pb-3" style={{ borderRadius: "30px" }}>
