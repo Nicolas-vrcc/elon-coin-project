@@ -152,7 +152,7 @@ const Widget = (props) => {
               <button id="swap-button" className="wrong-network">
                 <div className="swap-button-text">Presale Has Not Started</div>
               </button>
-            ) : props.tl.sta === "ended" ? (
+            ) : props.tl.state === "ended" ? (
               <button id="swap-button" className="wrong-network">
                 <div className="swap-button-text">Presale Has Ended</div>
               </button>
