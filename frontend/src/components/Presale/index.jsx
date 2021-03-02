@@ -11,10 +11,21 @@ const Presale = (props) => {
   const [elonBalance, setElonBalance] = useState(0);
   const [elon, setElon] = useState("");
   const [reRender, setReRender] = useState(false);
+  const [now, setNow] = useState(0);
 
   $(".busdmax").click(() => {
     setBusd(busdBalance);
   });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+    return () => {
+      console.log("clearing");
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     // Get current allowance
@@ -219,41 +230,40 @@ const Presale = (props) => {
     setElon(elonEquivalent);
   };
 
-  const arrangeTime = (timestamp) => {
-    const start = timestamp.start;
-    const end = timestamp.end;
+  const stringifyTime = (timestamp) => {
+    let days = timestamp / (1000 * 3600 * 24);
+    let hours = days * 24;
+    let minutes = hours * 60;
+    let seconds = minutes * 60;
 
-    const startDate = new Date(start * 1000);
-    console.log(start);
-    // alert(startDate.toDateString());
+    days = days.toString().split(".")[0];
+    hours = (hours % 24).toString().split(".")[0];
+    minutes = (minutes % 60).toString().split(".")[0];
+    seconds = (seconds % 60).toString().split(".")[0];
 
-    if (Date.now() > start * 1000) {
-      const startDate = new Date(start * 1000);
-      // alert(startDate.toDateString());
-      return { time: "time", state: "not_started" };
-    } else {
-    }
-    var date1 = new Date(Date.now());
-    var date2 = new Date(Date.now() + timestamp * 1000);
-
-    if (date1.getTime() > date2.getTime()) {
-      alert();
-      return { time: "time", state: "ahead" };
-    }
-    // To calculate the time difference of two dates
-    var Difference_In_Time = date2.getTime() - date1.getTime();
-
-    // To calculate the no. of days between two dates
-    var days = Difference_In_Time / (1000 * 3600 * 24);
-    // var hours = days * 24;
-    // var minute = hours * 60;
-    // var seconds = minute * 60;
-
-    return days;
+    return `${days}:${hours}:${minutes}:${seconds}`
+      .split(":")
+      .map((e) => `0${e}`.slice(-2))
+      .join(":");
   };
-  console.log(props.timeLeft);
+  const arrangeTime = (timestamp) => {
+    const start = timestamp.start * 1000;
+    const end = timestamp.end * 1000;
+    // const now = Date.now();
+    if (now < start) {
+      const timeLeft = start - now;
+      return { time: stringifyTime(timeLeft), state: "not_started" };
+    } else {
+      if (now < end) {
+        const timeLeft = end - now;
+        return { time: stringifyTime(timeLeft), state: "ongoing" };
+      } else {
+        const timeLeft = now - end;
+        return { time: stringifyTime(timeLeft), state: "ended" };
+      }
+    }
+  };
 
-  arrangeTime(props.timeLeft);
   return (
     <div className="container">
       <div className="row">
@@ -264,7 +274,7 @@ const Presale = (props) => {
           <Widget
             busdBalance={busdBalance}
             tkn={props.tokensLeft}
-            tl={0}
+            tl={arrangeTime(props.timeLeft)}
             busd={busd}
             onBusdChange={onBusdChange}
             onElonChange={onElonChange}

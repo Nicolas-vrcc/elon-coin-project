@@ -1,20 +1,20 @@
 import React from "react";
 
 const Widget = (props) => {
+  console.log(props.tl);
   return (
     <>
       <div className="shadow pt-3 pb-3" style={{ borderRadius: "30px" }}>
-        <div className="text-center" style={{ marginBottom: "20px" }}>
-          <div style={{ fontSize: "200%" }}>
+        <div className="text-center ml-3 mr-3" style={{ marginBottom: "20px" }}>
+          <div style={{ fontSize: "130%" }}>
             PRESALE (
-            {props.tl < 0 ? (
-              <small className="text-danger ">Ended</small>
-            ) : (
-              <small>
-                Ends in
-                <b className="text-danger ">{props.tl.toFixed(0)} days(s)</b>
-              </small>
-            )}
+            <small className="text-danger ">
+              {props.tl.state === "not_started"
+                ? `Starts in ${props.tl.time}`
+                : props.tl.state === "ongoing"
+                ? `Ends in ${props.tl.time}`
+                : "Presale Ended"}
+            </small>
             )
           </div>
           <b>{props.tkn} ELON Left</b>
@@ -147,7 +147,19 @@ const Widget = (props) => {
               </div>
             </div>
           </div>
-          <div className="swap-btn ml-3 mr-3">{props.button}</div>
+          <div className="swap-btn ml-3 mr-3">
+            {props.tl.state === "not_started" ? (
+              <button id="swap-button" className="wrong-network">
+                <div className="swap-button-text">Presale Has Not Started</div>
+              </button>
+            ) : props.tl.sta === "ended" ? (
+              <button id="swap-button" className="wrong-network">
+                <div className="swap-button-text">Presale Has Ended</div>
+              </button>
+            ) : (
+              props.button
+            )}
+          </div>
         </div>
       </div>
       <div className="text-center">

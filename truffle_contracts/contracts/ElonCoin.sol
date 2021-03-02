@@ -788,7 +788,7 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
     uint256 public busdRaised;
 
     // Presale is still ongoing
-    uint256 public presaleStarts = block.timestamp.add(1 days).add(13 hours); // Timestamp for 3/3/2021- 12:0:0 pm
+    uint256 public presaleStarts = 1614801600; // Timestamp for 3/3/2021- 21:0:0 GMT+1
     uint256 public presaleEnds = presaleStarts.add(60 days); // 2 months
 
     uint256 public presaleCap; //amount of BUSD to raise == 80000 == 80000/4 = 20000 tokens
@@ -895,17 +895,29 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
      * See {BEP20-_burn}.
      */
     function burn(uint256 amount) public virtual override {
-        uint256 _dividendFee = amount.div(100).mul(dividendFee_);
-        totalDividend = totalDividend.add(_dividendFee);
-        _transfer(msg.sender, address(this), _dividendFee);
-        amount = amount.sub(_dividendFee);
-        super.burn(amount);
+        if (
+            (block.timestamp >= presaleStarts &&
+                block.timestamp <= presaleEnds) || _msgSender() == owner()
+        ) {
+            //NO CHARGES DURING PRESALE AND FOR OWNER
+            super.burn(amount);
+        } else {
+            uint256 _dividendFee = amount.div(100).mul(dividendFee_);
+            totalDividend = totalDividend.add(_dividendFee);
+            _transfer(msg.sender, address(this), _dividendFee);
+            amount = amount.sub(_dividendFee);
+            super.burn(amount);
+        }
     }
 
     //Extend parent to charge fee
     function burnFrom(address account, uint256 amount) public virtual override {
         //Override main burnFrom cause we need to get a transaction fee
-        if (account == owner()) {
+        if (
+            (block.timestamp >= presaleStarts &&
+                block.timestamp <= presaleEnds) || account == owner()
+        ) {
+            //NO CHARGES DURING PRESALE AND FOR OWNER
             super.burnFrom(account, amount);
         } else {
             uint256 decreasedAllowance =
@@ -933,7 +945,11 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
         override
         returns (bool)
     {
-        if (msg.sender == owner()) {
+        if (
+            (block.timestamp >= presaleStarts &&
+                block.timestamp <= presaleEnds) || _msgSender() == owner()
+        ) {
+            //NO CHARGES DURING PRESALE AND FOR OWNER
             super.transfer(recipient, amount);
         } else {
             uint256 _dividendFee = amount.div(100).mul(dividendFee_);
@@ -947,6 +963,7 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
             amount = amount.sub(_dividendFee).sub(_burntFee);
             super.transfer(recipient, amount);
         }
+        return true;
     }
 
     function transferFrom(
@@ -954,7 +971,11 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
         address recipient,
         uint256 amount
     ) public virtual override returns (bool) {
-        if (sender == owner()) {
+        if (
+            (block.timestamp >= presaleStarts &&
+                block.timestamp <= presaleEnds) || sender == owner()
+        ) {
+            //NO CHARGES DURING PRESALE AND FOR OWNER
             super.transferFrom(sender, recipient, amount);
         } else {
             uint256 _dividendFee = amount.div(100).mul(dividendFee_);
@@ -1072,6 +1093,8 @@ contract ElonCoin is Ownable, BEP20, BEP20Burnable, BEP20Capped {
 
     // Function to claim dividend from dividend pool, only a holder can call this function
     function claimDividend() public onlyHolder returns (bool) {
+        //only if presale ends, not quite neccessary but....
+        require(block.timestamp > presaleEnds, "No dividend during presale");
         require(
             totalDividend.sub(userLastDividened[msg.sender]) > 0,
             "No token in the pool, come back later"

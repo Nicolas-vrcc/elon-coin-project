@@ -72,6 +72,7 @@ const App = (props) => {
         const tknLeft = await elon.methods.tokensLeft().call();
         const start = await elon.methods.presaleStarts().call();
         const end = await elon.methods.presaleEnds().call();
+        console.log(start, end);
         setTokensLeft(tknLeft / 1e18);
         setTimeLeft({ start: start, end: end });
         setNotSupported(false);
