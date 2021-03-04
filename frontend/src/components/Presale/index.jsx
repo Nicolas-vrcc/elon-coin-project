@@ -248,11 +248,11 @@ const Presale = (props) => {
   const arrangeTime = (timestamp) => {
     const start = timestamp.start * 1000;
     const end = timestamp.end * 1000;
-    // const now = Date.now();
     if (now < start) {
       const timeLeft = start - now;
       return { time: stringifyTime(timeLeft), state: "not_started" };
     } else {
+      console.log(start, end, Date.now())
       if (now < end) {
         const timeLeft = end - now;
         return { time: stringifyTime(timeLeft), state: "ongoing" };

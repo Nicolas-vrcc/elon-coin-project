@@ -28,10 +28,10 @@ const App = (props) => {
   const [wrongNetwork, setWrongNetwork] = useState(false);
   const [notSupported, setNotSupported] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [tokensLeft, setTokensLeft] = useState("100000");
+  const [tokensLeft, setTokensLeft] = useState("20000");
   const [timeLeft, setTimeLeft] = useState({
-    start: new Date("3/3/2021").setHours(21, 0, 0, 0),
-    end: new Date("2/5/2021").setHours(21, 0, 0, 0),
+    start: new Date("3/3/2021").setHours(21, 0, 0, 0) /1000,
+    end: new Date("5/2/2021").setHours(21, 0, 0, 0)/1000,
   });
 
   useEffect(() => {
