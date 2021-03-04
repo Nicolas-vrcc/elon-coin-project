@@ -32,7 +32,7 @@ const Modal = ({ handleClose, show, connect }) => {
 
           <div
             className="network d-flex justify-content-between mb-2"
-            onClick={(e) => connect()}
+            onClick={(e) => connect("mm")}
           >
             <div style={{ fontWeight: "bold" }}>MetaMask</div>
             <div>
@@ -41,7 +41,7 @@ const Modal = ({ handleClose, show, connect }) => {
           </div>
           <div
             className="network d-flex justify-content-between mb-4"
-            onClick={(e) => connect()}
+            onClick={(e) => connect("tw")}
           >
             <div style={{ fontWeight: "bold" }}>Trust Wallet</div>
             <img src="twt.svg" width="20" alt="TrustWallet" />

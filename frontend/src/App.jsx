@@ -17,6 +17,8 @@ import {
   getAccounts,
 } from "./funcs";
 
+import Swal from "sweetalert2";
+
 const App = (props) => {
   const [connection, setConnection] = useState({
     status: false,
@@ -28,10 +30,11 @@ const App = (props) => {
   const [wrongNetwork, setWrongNetwork] = useState(false);
   const [notSupported, setNotSupported] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showNotSupportedModal, setShowNotSupportedModal] = useState(false);
   const [tokensLeft, setTokensLeft] = useState("20000");
   const [timeLeft, setTimeLeft] = useState({
-    start: new Date("3/3/2021").setHours(21, 0, 0, 0) /1000,
-    end: new Date("5/2/2021").setHours(21, 0, 0, 0)/1000,
+    start: new Date("3/3/2021").setHours(21, 0, 0, 0) / 1000,
+    end: new Date("5/2/2021").setHours(21, 0, 0, 0) / 1000,
   });
 
   useEffect(() => {
@@ -39,8 +42,6 @@ const App = (props) => {
       const web3 = await loadWeb3();
 
       if (web3.message) {
-        // throw new Error(web3.message);
-        alert(web3.message);
         return;
       }
       web3.currentProvider.on("accountsChanged", ([account]) => {
@@ -95,7 +96,27 @@ const App = (props) => {
     }
   };
 
-  const connect = async () => {
+  const connect = async (e) => {
+    if (notSupported) {
+      if (e === "mm") {
+        Swal.fire({
+          title: "Error!",
+          text: "Please install MetaMask Extension to be able to use site",
+          icon: "error",
+          confirmButtonText: "Close",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Please install Trust Wallet App and open site with the app",
+          icon: "error",
+          confirmButtonText: "Close",
+        });
+      }
+      if (showModal) setShowModal(false);
+
+      return;
+    }
     await connectWallet();
     const acc = await getAccounts();
     updateConnection(acc);
@@ -110,7 +131,6 @@ const App = (props) => {
             <Navbar
               triggerPopup={setShowModal}
               networkError={wrongNetwork}
-              notSupported={notSupported}
               connect={connect}
               connected={{ ...connection }}
               update={updateConnection}
@@ -122,7 +142,6 @@ const App = (props) => {
               <Presale
                 triggerPopup={setShowModal}
                 networkError={wrongNetwork}
-                notSupported={notSupported}
                 tokensLeft={tokensLeft}
                 timeLeft={timeLeft}
                 instances={instances}

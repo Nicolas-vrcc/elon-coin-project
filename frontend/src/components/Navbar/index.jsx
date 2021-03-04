@@ -66,10 +66,6 @@ const Navbar = (props) => {
                 {props.connected.address.substr(-5)}
               </a>
             )
-          ) : props.notSupported ? (
-            <button className="item connect-wrong-network">
-              <div className="swap-button-text">Invalid Browser</div>
-            </button>
           ) : (
             <a
               href="/#"
@@ -101,121 +97,70 @@ const Navbar = (props) => {
           </div>
         </div>
       </div>
-      <div className="nav-mobile">
-        <div className="d-flex">
+
+      <div id="menuToggle">
+        <input type="checkbox" />
+        <span></span>
+        <span></span>
+        <span></span>
+
+        <ul id="menu">
           <a
-            href="/#"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById("mySidenav").style.width = "30%";
+            href="#/"
+            onClick={() => {
+              scrollTo("overview");
             }}
           >
-            <i className="fa fa-bars"></i>
+            <li>Overview</li>
+          </a>
+          <a
+            href="#/"
+            onClick={() => {
+              scrollTo("roadmap");
+            }}
+          >
+            <li>Roadmap</li>
+          </a>
+          <a
+            href="#/"
+            onClick={() => {
+              scrollTo("tokenomic");
+            }}
+          >
+            <li>Tokenomic</li>
+          </a>
+          <a
+            href="#/"
+            onClick={() => {
+              scrollTo("presale");
+            }}
+          >
+            <li>Presale</li>
           </a>
 
-          <div className="d-flex justify-content-end" style={{ width: "100%" }}>
-            {props.connected.status ? (
-              props.networkError ? (
-                <button className="item connect-wrong-network">
-                  <div className="swap-button-text">Wrong Network</div>
-                </button>
-              ) : (
-                <a
-                  href={`//bscscan.com/address/${props.connected.address}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="item address"
-                >
-                  {props.connected.address.substr(0, 5)}...
-                  {props.connected.address.substr(-5)}
-                </a>
-              )
-            ) : props.notSupported ? (
-              <button className="item connect-wrong-network">
-                <div className="swap-button-text">Invalid Browser</div>
-              </button>
-            ) : (
-              <a
-                href="/#"
-                className="connect"
-                onClick={(e) => {
-                  e.preventDefault();
-                  props.triggerPopup(true);
-                }}
-              >
-                Connect Wallet
-              </a>
-            )}
-          </div>
-        </div>
-        <div id="mySidenav" className="sidenav">
           <a
-            href="/#"
-            className="closebtn"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById("mySidenav").style.width = "0px";
-            }}
+            href="//t.me/EloncoinOfficialChat"
+            target="_blank"
+            rel="noreferrer"
           >
-            <i className="fa fa-times"></i>
+            <li>Telegram</li>
           </a>
-          <div className="links">
-            <a
-              href="#/"
-              onClick={() => {
-                scrollTo("overview");
-              }}
-            >
-              Overview
-            </a>
-            <a
-              href="#/"
-              onClick={() => {
-                scrollTo("roadmap");
-              }}
-            >
-              Roadmap
-            </a>
-            <a
-              href="#/"
-              onClick={() => {
-                scrollTo("tokenomic");
-              }}
-            >
-              Tokenomic
-            </a>
-            <a
-              href="#/"
-              onClick={() => {
-                scrollTo("presale");
-              }}
-            >
-              Presale
-            </a>
-            <Link to="/claim">Claim Dividends</Link>
-            <a
-              href="//t.me/EloncoinOfficialChat"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Telegram
-            </a>
-            <a
-              href="//twitter.com/TheRealEloncoin"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Twitter
-            </a>
-            <a
-              href="//therealeloncoin.medium.com"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Medium
-            </a>
-          </div>
-        </div>
+          <a
+            href="//twitter.com/TheRealEloncoin"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <li>Twitter</li>
+          </a>
+          <a
+            href="//therealeloncoin.medium.com"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <li>Medium</li>
+          </a>
+          <Link to="/claim">Claim Dividends</Link>
+        </ul>
       </div>
     </>
   );

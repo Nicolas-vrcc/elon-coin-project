@@ -191,13 +191,7 @@ const Presale = (props) => {
       }
     }
   } else {
-    if (props.notSupported) {
-      button = (
-        <button id="swap-button" className="wrong-network">
-          <div className="swap-button-text">Browser Not Supported</div>
-        </button>
-      );
-    } else {
+    
       button = (
         <button
           id="swap-button"
@@ -207,7 +201,6 @@ const Presale = (props) => {
           <div className="swap-button-text">Connect Wallet</div>
         </button>
       );
-    }
   }
 
   const onBusdChange = (e) => {
@@ -252,7 +245,6 @@ const Presale = (props) => {
       const timeLeft = start - now;
       return { time: stringifyTime(timeLeft), state: "not_started" };
     } else {
-      console.log(start, end, Date.now())
       if (now < end) {
         const timeLeft = end - now;
         return { time: stringifyTime(timeLeft), state: "ongoing" };
